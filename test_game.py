@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 
 import pytest
 
-from main import BOARD_COLUMNS, BOARD_ROWS, BestGameEverMade, BoardElement
+from game import BOARD_COLUMNS, BOARD_ROWS, BestGameEverMade, BoardElement
 
 if TYPE_CHECKING:
     from easyAI.TwoPlayerGame import PlayerIndex
