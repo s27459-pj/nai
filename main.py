@@ -34,6 +34,9 @@ class GameOfBones(TwoPlayerGame[Move]):
     def make_move(self, move: Move) -> None:
         self.pile -= move
 
+    def unmake_move(self, move: Move) -> None:
+        self.pile += move
+
     @override
     def is_over(self) -> bool:
         return self.pile <= 0
