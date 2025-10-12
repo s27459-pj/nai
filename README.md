@@ -10,3 +10,4 @@ Requirements:
 - [uv](https://docs.astral.sh/uv/)
 
 To run the game: `uv run main.py`
+To run tests: `uv run pytest`

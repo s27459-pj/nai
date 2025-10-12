@@ -9,7 +9,6 @@ class TwoPlayerGame[Move](ABC):
     players: list[Player]
     current_player: PlayerIndex
 
-    @classmethod
     @abstractmethod
     def possible_moves(cls) -> list[Move]: ...
     @abstractmethod
