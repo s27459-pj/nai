@@ -1,6 +1,15 @@
 # NAI
 
-TODO: Write some documentation/description
+## TODO
+
+- [ ] Write project description
+  - [ ] Rules
+  - [ ] Examples
+  - [ ] Screenshots
+- [ ] Environment setup instructions
+- [ ] Code documentation (methods)
+- [ ] Allow scoring tokens horizontally
+- [ ] More tests
 
 ## Running the Game
 
