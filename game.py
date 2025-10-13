@@ -33,6 +33,9 @@ class BoardElement(str, Enum):
     BLACK = "b"
 
 
+type Column = list[BoardElement]
+
+
 @final
 class BestGameEverMade(TwoPlayerGame[Move]):
     def __init__(self, players: list[Player], initial_player: PlayerIndex = 1) -> None:
@@ -40,7 +43,7 @@ class BestGameEverMade(TwoPlayerGame[Move]):
         self.current_player = initial_player
         # First dimension is the column, second dimension is the row
         # Columns are ordered from bottom to top
-        self.board: list[list[BoardElement]] = [[] for _ in range(BOARD_COLUMNS)]
+        self.board: list[Column] = [[] for _ in range(BOARD_COLUMNS)]
         self.player_1_remaining_tokens = INITIAL_PLAYER_TOKENS
         self.player_2_remaining_tokens = INITIAL_PLAYER_TOKENS
         self.player_1_score = 0
@@ -94,11 +97,7 @@ class BestGameEverMade(TwoPlayerGame[Move]):
             for _ in range(cells_to_score):
                 _ = selected_column.pop()
 
-    def _find_tokens_to_capture(
-        self,
-        column: list[BoardElement],
-        below: int,
-    ) -> list[int] | None:
+    def _find_tokens_to_capture(self, column: Column, below: int) -> list[int] | None:
         """
         Find tokens which can be captured by the current player
 
@@ -131,7 +130,7 @@ class BestGameEverMade(TwoPlayerGame[Move]):
 
         return None
 
-    def _find_tokens_to_score(self, column: list[BoardElement]) -> int | None:
+    def _find_tokens_to_score(self, column: Column) -> int | None:
         """
         Find tokens which can be scored by the current player
 
@@ -204,7 +203,7 @@ class BestGameEverMade(TwoPlayerGame[Move]):
         return all(self._column_is_full(column) for column in self.board)
 
     @staticmethod
-    def _column_is_full(column: list[BoardElement]) -> bool:
+    def _column_is_full(column: Column) -> bool:
         """A column is full if it has exactly `BOARD_ROWS` elements inside"""
 
         return len(column) == BOARD_ROWS

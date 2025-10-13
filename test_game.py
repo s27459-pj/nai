@@ -6,19 +6,18 @@ from typing import TYPE_CHECKING
 
 import pytest
 
-from game import BOARD_COLUMNS, BOARD_ROWS, BestGameEverMade, BoardElement
+from game import BOARD_COLUMNS, BOARD_ROWS, BestGameEverMade, BoardElement, Column
 
 if TYPE_CHECKING:
     from easyAI.TwoPlayerGame import PlayerIndex
 
 
-def _make_column(*elements: str) -> list[BoardElement]:
+def _make_column(*elements: str) -> Column:
     return [BoardElement(el) for el in elements]
 
 
 def test_column_is_full_with_empty_column() -> None:
-    column: list[BoardElement] = []
-    assert BestGameEverMade._column_is_full(column) is False
+    assert BestGameEverMade._column_is_full([]) is False
 
 
 def test_column_is_full_single_element() -> None:
@@ -87,7 +86,7 @@ def test_current_player_board_element(
         _make_column("w", "b"),
     ],
 )
-def test_find_tokens_to_capture_too_low(column: list[BoardElement]) -> None:
+def test_find_tokens_to_capture_too_low(column: Column) -> None:
     """Should return None when there are too little tokens below the given index"""
 
     game = BestGameEverMade([])
@@ -103,9 +102,7 @@ def test_find_tokens_to_capture_too_low(column: list[BoardElement]) -> None:
         _make_column("b", "w", "b", "b"),
     ],
 )
-def test_find_tokens_to_capture_no_consecutive_tokens(
-    column: list[BoardElement],
-) -> None:
+def test_find_tokens_to_capture_no_consecutive_tokens(column: Column) -> None:
     """
     Should return None when there are no opponent tokens
     to capture below the given index
@@ -124,7 +121,7 @@ def test_find_tokens_to_capture_no_consecutive_tokens(
     ],
 )
 def test_find_tokens_to_capture_consecutive_tokens(
-    column: list[BoardElement], expected: list[int]
+    column: Column, expected: list[int]
 ) -> None:
     """
     Should return captureable indexes when there are 2 consecutive
@@ -132,7 +129,6 @@ def test_find_tokens_to_capture_consecutive_tokens(
     """
 
     game = BestGameEverMade([])
-    game.board[0] = []
     below = len(column) - 1
     assert game._find_tokens_to_capture(column, below) == expected
 
@@ -141,8 +137,7 @@ def test_find_tokens_to_score_empty_column() -> None:
     """Should return None when the column is empty"""
 
     game = BestGameEverMade([])
-    game.board[0] = []
-    assert game._find_tokens_to_score(game.board[0]) is None
+    assert game._find_tokens_to_score([]) is None
 
 
 def test_find_tokens_to_score_no_tokens_to_score() -> None:
