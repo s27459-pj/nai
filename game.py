@@ -75,9 +75,6 @@ class BestGameEverMade(TwoPlayerGame[Move]):
             for _ in range(cells_to_score):
                 _ = selected_column.pop()
 
-        # FIXME: In the case: (B, W, B, B), the `W` token is captured
-        #        by the double `B` token, which shouldn't happen
-
     def _find_tokens_to_capture(
         self,
         column: list[BoardElement],
@@ -111,7 +108,7 @@ class BestGameEverMade(TwoPlayerGame[Move]):
             if cell == player:
                 consecutive_tokens += 1
             elif cell != player:
-                consecutive_tokens = 1
+                consecutive_tokens = 0
 
         if consecutive_tokens >= 3:
             return consecutive_tokens

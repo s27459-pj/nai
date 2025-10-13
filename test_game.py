@@ -153,6 +153,17 @@ def test_find_tokens_to_score_no_tokens_to_score() -> None:
     assert game._find_tokens_to_score(column) is None
 
 
+def test_find_tokens_to_score_interrupted_by_other_player() -> None:
+    """
+    Should return None when there are 3 current player tokens,
+    but they are interrupted by the opponent
+    """
+
+    game = BestGameEverMade([])
+    column = _make_column("w", "b", "w", "w")
+    assert game._find_tokens_to_score(column) is None
+
+
 def test_find_tokens_to_score_three_tokens_to_score() -> None:
     """Should return amount of scored tokens when there are three tokens to capture"""
 
