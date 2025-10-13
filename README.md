@@ -6,10 +6,10 @@
   - [ ] Rules
   - [ ] Examples
   - [ ] Screenshots
-- [ ] Environment setup instructions
-- [ ] Code documentation (methods)
+- [x] Environment setup instructions
+- [x] Code documentation (methods)
 - [ ] Allow scoring tokens horizontally
-- [ ] More tests
+- [x] More tests
 
 ## Running the Game
 
