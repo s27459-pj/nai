@@ -8,7 +8,7 @@
   - [ ] Screenshots
 - [x] Environment setup instructions
 - [x] Code documentation (methods)
-- [ ] Allow scoring tokens horizontally
+- [x] Allow scoring tokens horizontally
 - [x] More tests
 
 ## Running the Game

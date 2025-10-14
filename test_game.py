@@ -6,7 +6,14 @@ from typing import TYPE_CHECKING
 
 import pytest
 
-from game import BOARD_COLUMNS, BOARD_ROWS, BestGameEverMade, BoardElement, Column
+from game import (
+    BOARD_COLUMNS,
+    BOARD_ROWS,
+    BestGameEverMade,
+    BoardElement,
+    Column,
+    Point,
+)
 
 if TYPE_CHECKING:
     from easyAI.TwoPlayerGame import PlayerIndex
@@ -133,56 +140,201 @@ def test_find_tokens_to_capture_consecutive_tokens(
     assert game._find_tokens_to_capture(column, below) == expected
 
 
-def test_find_tokens_to_score_empty_column() -> None:
-    """Should return None when the column is empty"""
+def test_find_tokens_to_score_empty_board() -> None:
+    """Should return an empty set when the board is empty"""
 
     game = BestGameEverMade([])
-    assert game._find_tokens_to_score([]) is None
+    assert game._find_tokens_to_score() == set()
 
 
-def test_find_tokens_to_score_no_tokens_to_score() -> None:
-    """Should return None when there are no consecutive tokens to score"""
+def test_find_tokens_to_score_no_tokens_to_score_in_column() -> None:
+    """Should return an empty set when there are no tokens to score in a column"""
 
     game = BestGameEverMade([])
-    column = _make_column("w", "b", "w", "b")
-    assert game._find_tokens_to_score(column) is None
+    game.board[0] = _make_column("w", "b", "w", "b")
+    assert game._find_tokens_to_score() == set()
 
 
-def test_find_tokens_to_score_interrupted_by_other_player() -> None:
+def test_find_tokens_to_score_no_tokens_to_score_in_row() -> None:
+    """Should return an empty set when there are no tokens to score in a row"""
+
+    game = BestGameEverMade([])
+    game.board[0] = _make_column("w")
+    game.board[1] = _make_column("b")
+    game.board[2] = _make_column("w")
+    game.board[3] = _make_column("b")
+    assert game._find_tokens_to_score() == set()
+
+
+def test_find_tokens_to_score_in_a_column_interrupted_by_other_player() -> None:
     """
-    Should return None when there are 3 current player tokens,
+    Should return an empty set when there are 3 current player tokens in a column,
     but they are interrupted by the opponent
     """
 
     game = BestGameEverMade([])
-    column = _make_column("w", "b", "w", "w")
-    assert game._find_tokens_to_score(column) is None
+    game.board[0] = _make_column("w", "b", "w", "w")
+    assert game._find_tokens_to_score() == set()
 
 
-def test_find_tokens_to_score_three_tokens_to_score() -> None:
-    """Should return amount of scored tokens when there are three tokens to capture"""
-
-    game = BestGameEverMade([])
-    column = _make_column("w", "w", "w")
-    assert game._find_tokens_to_score(column) == 3
-
-
-def test_find_tokens_to_score_four_tokens_to_score() -> None:
+def test_find_tokens_to_score_in_a_row_interrupted_by_other_player() -> None:
     """
-    Should return amount of scored tokens when there are four tokens to capture
-
-    This can happen after a successful capture of 2 BLACK tokens:
-    w, b, b, w -> w, w, w, w
+    Should return an empty set when there are 3 current player tokens in a row,
+    but they are interrupted by the opponent
     """
 
     game = BestGameEverMade([])
-    column = _make_column("w", "w", "w", "w")
-    assert game._find_tokens_to_score(column) == 4
+    game.board[0] = _make_column("w")
+    game.board[1] = _make_column("b")
+    game.board[2] = _make_column("w")
+    game.board[3] = _make_column("w")
+    assert game._find_tokens_to_score() == set()
+
+
+def test_find_tokens_to_score_in_a_row_interrupted_by_empty_column() -> None:
+    """
+    Should return an empty set when there are 3 current player tokens in a row,
+    but they are interrupted by an empty column
+    """
+
+    game = BestGameEverMade([])
+    game.board[0] = _make_column("w")
+    game.board[1] = _make_column()
+    game.board[2] = _make_column("w")
+    game.board[3] = _make_column("w")
+    assert game._find_tokens_to_score() == set()
+
+
+def test_find_tokens_to_score_three_tokens_to_score_in_a_column() -> None:
+    """Should return three points when there are three tokens in a column to capture"""
+
+    game = BestGameEverMade([])
+    game.board[0] = _make_column("w", "w", "w")
+    assert game._find_tokens_to_score() == {(0, 0), (0, 1), (0, 2)}
+
+
+@pytest.mark.parametrize(
+    ("columns", "expected"),
+    [
+        (
+            # 3 consecutive tokens
+            [
+                _make_column("w"),
+                _make_column("w"),
+                _make_column("w"),
+            ],
+            {(0, 0), (1, 0), (2, 0)},
+        ),
+        (
+            # 5 consecutive tokens - can happen after a capture
+            [
+                _make_column("w"),
+                _make_column("w"),
+                _make_column("w"),
+                _make_column("w"),
+                _make_column("w"),
+            ],
+            {(0, 0), (1, 0), (2, 0), (3, 0), (4, 0)},
+        ),
+        (
+            # Breaking the consecutive sequence should still give the same result
+            [
+                _make_column("w"),
+                _make_column("w"),
+                _make_column("w"),
+                _make_column("b"),
+            ],
+            {(0, 0), (1, 0), (2, 0)},
+        ),
+        (
+            # 3 consecutive tokens, but in the 2nd row
+            [
+                _make_column("b", "w"),
+                _make_column("b", "w"),
+                _make_column("b", "w"),
+            ],
+            {(0, 1), (1, 1), (2, 1)},
+        ),
+    ],
+)
+def test_find_tokens_to_score_consecutive_tokens_in_rows(
+    columns: list[Column],
+    expected: set[Point],
+) -> None:
+    """Should return three points when there are three tokens in a row to capture"""
+
+    game = BestGameEverMade([])
+    for col_idx, col in enumerate(columns):
+        game.board[col_idx] = col
+    assert game._find_tokens_to_score() == expected
+
+
+def test_find_tokens_to_score_four_tokens_to_score_in_a_column() -> None:
+    """
+    Should return four points when there are four tokens to score in a column
+
+    This can happen after a successful capture of 2 tokens:
+    [W] <- was just placed by player 1
+    [B]
+    [B]
+    [W]
+    Would turn into:
+    [W]
+    [W] <- captured by token above
+    [W] <- captured by token above
+    [W]
+    Which can then be scored as 4 tokens at the same time
+    """
+
+    game = BestGameEverMade([])
+    game.board[0] = _make_column("w", "w", "w", "w")
+    assert game._find_tokens_to_score() == {(0, 0), (0, 1), (0, 2), (0, 3)}
+
+
+def test_find_tokens_to_score_from_row_and_column_after_capture() -> None:
+    """
+    Should return six points when there is a 4-long row after a capture of 2 tokens
+
+    This can happen after a successful capture of 2 tokens:
+        v----------- [W] was just placed by player 1
+    [ ][W][ ][ ]
+    [B][B][W][B]
+    [W][B][W][W]
+    Would turn into:
+        v----------- whole column got turned into [W] after the capture
+    [ ][W][ ][ ]
+    [B][W][W][B]
+    [W][W][W][W]
+    Which can then be scored as 6 tokens at the same time:
+    - 4 from the bottom row
+    - 3 from the column (1 overlaps)
+    """
+
+    game = BestGameEverMade([])
+    game.board[0] = _make_column("w", "b")
+    game.board[1] = _make_column("w", "w", "w")
+    game.board[2] = _make_column("w", "w")
+    game.board[3] = _make_column("w", "b")
+    to_score_from_column = {(1, 0), (1, 1), (1, 2)}
+    to_score_from_row = {(0, 0), (1, 0), (2, 0), (3, 0)}
+    assert game._find_tokens_to_score() == to_score_from_column | to_score_from_row
 
 
 def test_find_tokens_to_score_full_column_with_no_tokens_to_score() -> None:
-    """Should return None when a column is full, but it has no tokens to score"""
+    """Should return an empty set when a column is full, but has no tokens to score"""
 
     game = BestGameEverMade([])
-    column = _make_column("w", "b", "w", "b", "w")
-    assert game._find_tokens_to_score(column) is None
+    game.board[0] = _make_column("w", "b", "w", "b", "w")
+    assert game._find_tokens_to_score() == set()
+
+
+def test_find_tokens_to_score_full_row_with_no_tokens_to_score() -> None:
+    """Should return an empty set when a row is full, but has no tokens to score"""
+
+    game = BestGameEverMade([])
+    game.board[0] = _make_column("w")
+    game.board[1] = _make_column("b")
+    game.board[2] = _make_column("w")
+    game.board[3] = _make_column("b")
+    game.board[4] = _make_column("w")
+    assert game._find_tokens_to_score() == set()

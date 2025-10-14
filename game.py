@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import TYPE_CHECKING, Literal, final, override
+from typing import TYPE_CHECKING, Literal, NamedTuple, final, override
 
 from easyAI import TwoPlayerGame
 
@@ -31,6 +31,11 @@ type Move = Literal[1, 2, 3, 4, 5, 6, 7]
 class BoardElement(str, Enum):
     WHITE = "w"
     BLACK = "b"
+
+
+class Point(NamedTuple):
+    col: int
+    row: int
 
 
 type Column = list[BoardElement]
@@ -74,7 +79,7 @@ class BestGameEverMade(TwoPlayerGame[Move]):
         2. Check if any opponent tokens can be captured
             a. Change captured opponent tokens into current player's tokens
         3. Check if any current player tokens can be scored
-            a. Pop scored tokens from their column
+            a. Remove scored tokens from the board
             b. Add the amount of scored tokens to the current player's score
         """
 
@@ -91,11 +96,14 @@ class BestGameEverMade(TwoPlayerGame[Move]):
             for index in cells_to_capture:
                 selected_column[index] = self._current_player_board_element
 
-        cells_to_score = self._find_tokens_to_score(selected_column)
-        if cells_to_score is not None:
-            self.add_score_to_current_player(cells_to_score)
-            for _ in range(cells_to_score):
-                _ = selected_column.pop()
+        cells_to_score = self._find_tokens_to_score()
+        while len(cells_to_score) > 0:
+            for col, row in cells_to_score:
+                if len(self.board[col]) > row:
+                    del self.board[col][row]
+
+            self.add_score_to_current_player(len(cells_to_score))
+            cells_to_score = self._find_tokens_to_score()
 
     def _find_tokens_to_capture(self, column: Column, below: int) -> list[int] | None:
         """
@@ -130,7 +138,7 @@ class BestGameEverMade(TwoPlayerGame[Move]):
 
         return None
 
-    def _find_tokens_to_score(self, column: Column) -> int | None:
+    def _find_tokens_to_score(self) -> set[Point]:
         """
         Find tokens which can be scored by the current player
 
@@ -138,26 +146,49 @@ class BestGameEverMade(TwoPlayerGame[Move]):
         tokens of the same player, for example:
         (b, w, w, w) can be scored by `w` (player 1). It would leave (b) after scoring.
 
-        :return: Amount of tokens that can be scored from the top in the given column
+        Tokens can be scored in rows and columns.
+        All available tokens are combined into the result of this function.
+
+        :return: Set of points on the board that can be scored
         """
 
-        if len(column) <= 2:
-            return None
+        out: set[Point] = set()
 
-        # TODO: Allow scoring horizontally
+        # Find scoreable tokens column-wise
+        for col_idx, column in enumerate(self.board):
+            points_in_column: list[Point] = []
+            for row_idx, cell in enumerate(column):
+                if cell == self._current_player_board_element:
+                    points_in_column.append(Point(col_idx, row_idx))
+                elif cell != self._current_player_board_element:
+                    points_in_column = []
 
-        consecutive_tokens = 1
-        player = column[0]
-        for cell in column[1:]:
-            if cell == player:
-                consecutive_tokens += 1
-            elif cell != player:
-                consecutive_tokens = 0
+            if len(points_in_column) >= 3:
+                out.update(points_in_column)
 
-        if consecutive_tokens >= 3:
-            return consecutive_tokens
+        for row_idx in range(BOARD_ROWS):
+            points_in_row: list[Point] = []
+            for col_idx in range(BOARD_COLUMNS):
+                # Reset the chain if it's broken up and commit it
+                # if at least 3 consecutive elements were found
+                if len(self.board[col_idx]) <= row_idx:
+                    if len(points_in_row) >= 3:
+                        out.update(points_in_row)
+                    points_in_row = []
+                    continue
 
-        return None
+                cell = self.board[col_idx][row_idx]
+                if cell == self._current_player_board_element:
+                    points_in_row.append(Point(col_idx, row_idx))
+                elif cell != self._current_player_board_element:
+                    if len(points_in_row) >= 3:
+                        out.update(points_in_row)
+                    points_in_row = []
+
+            if len(points_in_row) >= 3:
+                out.update(points_in_row)
+
+        return out
 
     @property
     def _current_player_board_element(self) -> BoardElement:
@@ -248,6 +279,7 @@ class BestGameEverMade(TwoPlayerGame[Move]):
         print()
 
         # Board rows and columns
+        # TODO: Print the board from top to bottom
         for row in range(BOARD_ROWS):
             print(row + 1, end=" ")
             for col in range(BOARD_COLUMNS):
