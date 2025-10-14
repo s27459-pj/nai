@@ -256,12 +256,12 @@ class BestGameEverMade(TwoPlayerGame[Move]):
         -------
         ```
         Player 1: 0 points (16/20), Player 2: 0 points (16/20)
-        1  2  3  4  5  6  7
-        1 [b][w][w][ ][ ][ ][ ]
-        2 [ ][b][b][ ][ ][ ][ ]
-        3 [ ][w][ ][ ][ ][ ][ ]
-        4 [ ][b][ ][ ][ ][ ][ ]
+           1  2  3  4  5  6  7
         5 [ ][w][ ][ ][ ][ ][ ]
+        4 [ ][b][ ][ ][ ][ ][ ]
+        3 [ ][w][ ][ ][ ][ ][ ]
+        2 [ ][b][b][ ][ ][ ][ ]
+        1 [b][w][w][ ][ ][ ][ ]
         ```
         """
 
@@ -279,8 +279,7 @@ class BestGameEverMade(TwoPlayerGame[Move]):
         print()
 
         # Board rows and columns
-        # TODO: Print the board from top to bottom
-        for row in range(BOARD_ROWS):
+        for row in range(BOARD_ROWS - 1, -1, -1):
             print(row + 1, end=" ")
             for col in range(BOARD_COLUMNS):
                 column = self.board[col]
