@@ -16,13 +16,13 @@ When inside the `game` directory:
 
 1. Players can place tokens in any non-full column during their turn
 2. Tokens fall down to the first available row in the column
-3. If a token lands on exactly two tokens of the same color, they are captured[^1] by the Player that placed the token on top
+3. If a token lands on exactly two tokens of the same color, they are captured (see below)
 4. If there are 3+ tokens of the same color in a column or row, they are removed from the board
 5. For each cleared token, the Player receives a point
 6. The game ends when all possible spaces are used or Players run out of moves
 7. The Player with the highest score at the end of the game wins
 
-[^1]: Capture - Two opponent tokens below the token that landed on them are converted to be tokens of the Player that placed the token on top
+Capture - Two opponent tokens below the token that landed on them are converted to be tokens of the Player that placed the token on top
 
 ## Example Gameplay
 
