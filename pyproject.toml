@@ -4,13 +4,9 @@ version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
-dependencies = [
-    "easyai>=2.0.12",
-]
+dependencies = []
 
-[dependency-groups]
-dev = [
-    "basedpyright>=1.31.7",
-    "pytest>=8.4.2",
-    "ruff>=0.14.0",
+[tool.uv.workspace]
+members = [
+    "game",
 ]

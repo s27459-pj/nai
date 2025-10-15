@@ -1,5 +1,13 @@
 # Best Game Ever Made
 
+## Running
+
+Make sure you have uv and python, see "Environment Setup" in the main [README.md](../README.md) for more detailed instructions.
+
+When inside the `game` directory:
+- Run the game: `uv run main.py`
+- Run tests: `uv run pytest`
+
 ## Rules
 
 TODO)) Rules and game mechanics
