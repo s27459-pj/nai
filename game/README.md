@@ -1,23 +1,9 @@
-# NAI
+# Best Game Ever Made
 
-## TODO
+## Rules
 
-- [ ] Write project description
-  - [ ] Rules
-  - [ ] Examples
-  - [ ] Screenshots
-- [x] Environment setup instructions
-- [x] Code documentation (methods)
-- [x] Allow scoring tokens horizontally
-- [x] More tests
+TODO)) Rules and game mechanics
 
-## Running the Game
+## Example Gameplay
 
-Requirements:
-- Python 3.13
-  - Can be installed with `uv python install 3.13`
-- [uv](https://docs.astral.sh/uv/)
-  - To install, follow instructions at https://docs.astral.sh/uv/getting-started/installation/
-
-To run the game: `uv run main.py`
-To run tests: `uv run pytest`
+TODO)) Screenshot
