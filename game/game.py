@@ -98,7 +98,12 @@ class BestGameEverMade(TwoPlayerGame[Move]):
 
         cells_to_score = self._find_tokens_to_score()
         while len(cells_to_score) > 0:
-            for col, row in cells_to_score:
+            cells_to_score_from_top_to_bottom = sorted(
+                cells_to_score,
+                key=lambda p: p.row,
+                reverse=True,  # Higher row index - closer to the top
+            )
+            for col, row in cells_to_score_from_top_to_bottom:
                 if len(self.board[col]) > row:
                     del self.board[col][row]
 
