@@ -94,11 +94,13 @@ def test_current_player_board_element(
     ],
 )
 def test_find_tokens_to_capture_too_low(column: Column) -> None:
-    """Should return None when there are too little tokens below the given index"""
+    """
+    Should return an empty set when there are not enough tokens below the given index
+    """
 
     game = BestGameEverMade([])
-    below = len(column) - 1
-    assert game._find_tokens_to_capture(column, below) is None
+    game.board[0] = column
+    assert game._find_tokens_to_capture() == set()
 
 
 @pytest.mark.parametrize(
@@ -110,34 +112,33 @@ def test_find_tokens_to_capture_too_low(column: Column) -> None:
     ],
 )
 def test_find_tokens_to_capture_no_consecutive_tokens(column: Column) -> None:
-    """
-    Should return None when there are no opponent tokens
-    to capture below the given index
-    """
+    """Should return an empty set when there are no opponent tokens"""
 
     game = BestGameEverMade([])
-    below = len(column) - 2
-    assert game._find_tokens_to_capture(column, below) is None
+    game.board[0] = column
+    assert game._find_tokens_to_capture() == set()
 
 
 @pytest.mark.parametrize(
     ("column", "expected"),
     [
-        (_make_column("b", "b", "w"), [0, 1]),
-        (_make_column("w", "b", "b", "w"), [1, 2]),
+        (_make_column("b", "b", "w"), {(0, 0), (0, 1)}),
+        (_make_column("w", "b", "b", "w"), {(0, 1), (0, 2)}),
+        # Captures should be possible even when covered up
+        (_make_column("b", "b", "w", "b"), {(0, 0), (0, 1)}),
     ],
 )
 def test_find_tokens_to_capture_consecutive_tokens(
-    column: Column, expected: list[int]
+    column: Column, expected: set[Point]
 ) -> None:
     """
-    Should return captureable indexes when there are 2 consecutive
-    opponent tokens below the given index
+    Should return captureable points when there are 2 consecutive
+    opponent tokens below the current player
     """
 
     game = BestGameEverMade([])
-    below = len(column) - 1
-    assert game._find_tokens_to_capture(column, below) == expected
+    game.board[0] = column
+    assert game._find_tokens_to_capture() == expected
 
 
 def test_find_tokens_to_score_empty_board() -> None:

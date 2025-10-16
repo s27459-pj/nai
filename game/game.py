@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections.abc import Iterable, Iterator
 from enum import Enum
 from typing import TYPE_CHECKING, Literal, NamedTuple, final, override
 
@@ -81,40 +82,49 @@ class BestGameEverMade(TwoPlayerGame[Move]):
         3. Check if any current player tokens can be scored
             a. Remove scored tokens from the board
             b. Add the amount of scored tokens to the current player's score
+        4. Repeat steps 2 and 3 until no more tokens can be captured or scored
         """
 
+        # Make sure the move is valid
         selected_column = self.board[move - 1]
         if len(selected_column) >= BOARD_ROWS:
             raise ValueError(f"Column {move - 1} is full")
 
+        # Place the current player's token in the selected column
         selected_column.append(self._current_player_board_element)
         self.use_current_player_token()
 
-        added_at_index = len(selected_column) - 1
-        cells_to_capture = self._find_tokens_to_capture(selected_column, added_at_index)
-        if cells_to_capture is not None:
-            for index in cells_to_capture:
-                selected_column[index] = self._current_player_board_element
+        # Capture and score tokens until there is nothing left to process
+        captured_or_scored_tokens = self._capture_and_score_tokens()
+        while captured_or_scored_tokens:
+            captured_or_scored_tokens = self._capture_and_score_tokens()
 
-        # FIXME: Add a loop to reevaluate the board for chain reactions of capture-and-score
-        # seqeuences after the initial score/capture-and-score. Consecutive capture-and-score
-        # sequences should always take priority over consecutive scores.
+    def _capture_and_score_tokens(self) -> bool:
+        """
+        Capture and score tokens on the board after placing a token
+
+        :return: True if any tokens were captured or scored, False otherwise
+        """
+
+        cells_to_capture = self._find_tokens_to_capture()
+        for col, row in cells_to_capture:
+            self.board[col][row] = self._current_player_board_element
 
         cells_to_score = self._find_tokens_to_score()
-        while len(cells_to_score) > 0:
-            cells_to_score_from_top_to_bottom = sorted(
-                cells_to_score,
-                key=lambda p: p.row,
-                reverse=True,  # Higher row index - closer to the top
-            )
-            for col, row in cells_to_score_from_top_to_bottom:
-                if len(self.board[col]) > row:
-                    del self.board[col][row]
+        cells_to_score_from_top_to_bottom = sorted(
+            cells_to_score,
+            key=lambda p: p.row,
+            reverse=True,  # Higher row index - closer to the top
+        )
+        for col, row in cells_to_score_from_top_to_bottom:
+            if len(self.board[col]) > row:
+                del self.board[col][row]
 
-            self.add_score_to_current_player(len(cells_to_score))
-            cells_to_score = self._find_tokens_to_score()
+        self.add_score_to_current_player(len(cells_to_score))
 
-    def _find_tokens_to_capture(self, column: Column, below: int) -> list[int] | None:
+        return len(cells_to_capture) > 0 or len(cells_to_score) > 0
+
+    def _find_tokens_to_capture(self) -> set[Point]:
         """
         Find tokens which can be captured by the current player
 
@@ -122,30 +132,38 @@ class BestGameEverMade(TwoPlayerGame[Move]):
         on top of 2 consecutive opponent tokens, for example:
         (b, b, w) can be captured if `w` was just placed. It would turn into (w, w, w).
 
-        Captures are calculated from top to bottom (end to start of column lists).
-
-        :return: A list of indexes which can be captured if any or None if not possible
+        :return: Set of points on the board that can be captured
         """
 
-        if below <= 1:
-            return None
+        out: set[Point] = set()
 
-        below_added = column[:below]
-        consecutive_opponent_tokens = 0
-        for cell in reversed(below_added):
-            # Found the current player's cell - capture is not possible
-            if cell == self._current_player_board_element:
-                return None
+        for col_idx, column in enumerate(self.board):
+            if len(column) <= 2:
+                continue
 
-            # Count up consecutive opponent cells
-            if cell != self._current_player_board_element:
-                consecutive_opponent_tokens += 1
+            points_to_capture: list[Point] = []
+            found_current_player_token = False
+            for row_idx in range(len(column) - 1, -1, -1):
+                cell = column[row_idx]
+                # Found the current player's cell - capture is not possible
+                if cell == self._current_player_board_element:
+                    points_to_capture = []
+                    found_current_player_token = True
+                    continue
 
-            # Found 2 consecutive tokens - don't look further
-            if consecutive_opponent_tokens == 2:
-                return [below - 2, below - 1]
+                # Don't proceed if we haven't yet found the current player's token
+                if not found_current_player_token:
+                    continue
 
-        return None
+                if cell != self._current_player_board_element:
+                    points_to_capture.append(Point(col_idx, row_idx))
+
+                # Found 2 consecutive tokens - don't look further
+                if len(points_to_capture) == 2:
+                    out.update(points_to_capture)
+                    break
+
+        return out
 
     def _find_tokens_to_score(self) -> set[Point]:
         """
