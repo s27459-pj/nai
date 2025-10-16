@@ -96,6 +96,10 @@ class BestGameEverMade(TwoPlayerGame[Move]):
             for index in cells_to_capture:
                 selected_column[index] = self._current_player_board_element
 
+        # FIXME: Add a loop to reevaluate the board for chain reactions of capture-and-score
+        # seqeuences after the initial score/capture-and-score. Consecutive capture-and-score
+        # sequences should always take priority over consecutive scores.
+
         cells_to_score = self._find_tokens_to_score()
         while len(cells_to_score) > 0:
             cells_to_score_from_top_to_bottom = sorted(
