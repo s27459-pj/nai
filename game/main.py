@@ -10,12 +10,22 @@ def main() -> None:
     ai = Negamax(7)
     game = BestGameEverMade([Human_Player(), AI_Player(ai)])
 
-    try:
-        _ = game.play()
-    except KeyboardInterrupt:
-        print("\nBye")
-        pass
+    hist = game.play()
+
+    last_game_state = hist[-1]
+    assert isinstance(last_game_state, BestGameEverMade)
+
+    if last_game_state.player_1_score > last_game_state.player_2_score:
+        print("Player 1 wins!")
+    elif last_game_state.player_1_score < last_game_state.player_2_score:
+        print("Player 2 wins!")
+    else:
+        print("It's a tie!")
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        print("\nBye")
+        pass
