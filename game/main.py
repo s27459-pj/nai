@@ -1,3 +1,7 @@
+"""
+See README.md for running instructions, game rules and authors.
+"""
+
 from __future__ import annotations
 
 from easyAI.AI.Negamax import Negamax

@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from collections.abc import Iterable, Iterator
 from enum import Enum
 from typing import TYPE_CHECKING, Literal, NamedTuple, final, override
 
