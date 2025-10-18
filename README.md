@@ -9,6 +9,8 @@ Requirements:
   - To install, follow instructions at https://docs.astral.sh/uv/getting-started/installation/
   - uv will install Python 3.13 automatically, but you can also do `uv python install 3.13` to invoke it manually
 
-## Best Game Ever Made
+## Classes
 
-See the [game/](./game/README.md) directory.
+### 1. Adversarial Search 2025.10.04
+
+See the [game/](./game/README.md) directory for details.
