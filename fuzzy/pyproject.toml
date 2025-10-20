@@ -1,0 +1,17 @@
+[project]
+name = "fuzzy"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "numpy>=2.3.3",
+    "scikit-fuzzy>=0.5.0",
+]
+
+[dependency-groups]
+dev = [
+    "basedpyright>=1.31.7",
+    "pytest>=8.4.2",
+    "ruff>=0.14.0",
+]

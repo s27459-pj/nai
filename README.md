@@ -14,3 +14,7 @@ Requirements:
 ### 1. Adversarial Search 2025.10.04
 
 See the [game/](./game/README.md) directory for details.
+
+### 2. Fuzzy Logic 2025.10.18
+
+See the [fuzzy/](./fuzzy/README.md) directory for details.
