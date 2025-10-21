@@ -15,11 +15,12 @@
         default = pkgs.mkShell {
           packages = with pkgs; [
             python313
+            python313Packages.numpy
+            python313Packages.scipy
+            python313Packages.networkx
+            python313Packages.matplotlib
             uv
           ];
-          shellHook = ''
-
-          '';
         };
       });
     };
