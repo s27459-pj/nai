@@ -7,7 +7,7 @@ from skfuzzy.membership import trimf
 # - humidity (current)
 # - target_temperature
 # 2 Outputs: 
-# - mode (fan_only, heating, cooling, dehumidifying)
+# - mode (adjust_temperature, dehumidify)
 # - fan_speed (0-100)
 
 temperature = ctrl.Antecedent(np.arange(0, 35, 1), "temperature")
