@@ -1,14 +1,10 @@
+"""
+See README.md for running instructions, game rules and authors.
+"""
+
 import numpy as np
 from skfuzzy import control as ctrl
 from skfuzzy.membership import trimf
-
-# AC with 3 inputs:
-# - temperature (current)
-# - humidity (current)
-# - target_temperature
-# 2 Outputs: 
-# - mode (adjust_temperature, dehumidify)
-# - fan_speed (0-100)
 
 temperature = ctrl.Antecedent(np.arange(0, 35, 1), "temperature")
 humidity = ctrl.Antecedent(np.arange(0, 101, 1), "humidity")
