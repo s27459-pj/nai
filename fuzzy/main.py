@@ -15,7 +15,7 @@ humidity = ctrl.Antecedent(np.arange(0, 101, 1), "humidity")
 target_temperature = ctrl.Antecedent(np.arange(17, 31, 1), "target_temperature")
 
 fan_speed = ctrl.Consequent(np.arange(0, 101, 1), "fan_speed")
-mode = ctrl.Consequent(np.arange(0, 4.1, 0.1), "mode")
+mode = ctrl.Consequent(np.arange(0, 2.1, 0.1), "mode")
 
 temperature.automf(5, names=["cold", "cool", "comfortable", "warm", "hot"])
 humidity.automf(3, names=["dry", "comfortable", "sticky"])
@@ -27,8 +27,8 @@ fan_speed["standard"]  = trimf(fan_speed.universe, [40, 55, 70])
 fan_speed["fast"]      = trimf(fan_speed.universe, [60, 75, 90])
 fan_speed["very_fast"] = trimf(fan_speed.universe, [70, 90, 100])
 
-mode["adjust_temperature"] = trimf(mode.universe, [0, 0, 2])
-mode["dehumidify"] = trimf(mode.universe, [2, 4, 4])
+mode["adjust_temperature"] = trimf(mode.universe, [0, 0, 1])
+mode["dehumidify"] = trimf(mode.universe, [1, 2, 2])
 
 
 def get_rules() -> list[ctrl.Rule]:
@@ -79,9 +79,15 @@ def compute(temperature: float, humidity: float, target_temperature: float) -> t
     return mode, fan_speed
 
 
-# 144 results, for better visualization redirect main.py output to a txt file
-# Also, mode is displayed as quantitative value instead of category label
+def format_mode(mode: float) -> str:
+    if mode < 1.0:
+        return "adjust_temp"
+    else:
+        return "dehumidify"
+
 def main() -> None:
+    # 6 * 6 * 4 = 144 results
+    # For better visualization, redirect output to a txt file
     temperatures = [6, 12, 18, 24, 30, 34]
     humidities = [15, 30, 45, 60, 75, 90]
     targets = [18, 22, 26, 30]
@@ -93,7 +99,8 @@ def main() -> None:
         for h in humidities:
             for target in targets:
                 mode, fan_speed = compute(t, h, target)
-                print(f"{t:6.1f} {h:6.1f} {target:8.1f} {mode:12.2f} {fan_speed:12.2f}")
+                mode_str = format_mode(mode)
+                print(f"{t:6.1f} {h:6.1f} {target:8.1f} {mode_str:>12} {fan_speed:12.2f}")
 
 
 if __name__ == "__main__":
