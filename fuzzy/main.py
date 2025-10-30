@@ -31,38 +31,37 @@ mode["adjust_temperature"] = trimf(mode.universe, [0, 0, 1])
 mode["dehumidify"] = trimf(mode.universe, [1, 2, 2])
 
 
-def get_rules() -> list[ctrl.Rule]:
-    return [
-        # Rules for mode
-        ctrl.Rule(humidity["dry"] | humidity["comfortable"], mode["adjust_temperature"]),
-        ctrl.Rule(humidity["sticky"], mode["dehumidify"]),
+RULES = [
+    # Rules for mode
+    ctrl.Rule(humidity["dry"] | humidity["comfortable"], mode["adjust_temperature"]),
+    ctrl.Rule(humidity["sticky"], mode["dehumidify"]),
 
-        # Rules for fan_speed based on temperature and target_temperature
-        ctrl.Rule(temperature["cold"] & target_temperature["low"], fan_speed["very_fast"]),
-        ctrl.Rule(temperature["cool"] & target_temperature["low"], fan_speed["standard"]),
-        ctrl.Rule(temperature["comfortable"] & target_temperature["low"], fan_speed["very_slow"]),
-        ctrl.Rule(temperature["warm"] & target_temperature["low"], fan_speed["standard"]),
-        ctrl.Rule(temperature["hot"] & target_temperature["low"], fan_speed["fast"]),
+    # Rules for fan_speed based on temperature and target_temperature
+    ctrl.Rule(temperature["cold"] & target_temperature["low"], fan_speed["very_fast"]),
+    ctrl.Rule(temperature["cool"] & target_temperature["low"], fan_speed["standard"]),
+    ctrl.Rule(temperature["comfortable"] & target_temperature["low"], fan_speed["very_slow"]),
+    ctrl.Rule(temperature["warm"] & target_temperature["low"], fan_speed["standard"]),
+    ctrl.Rule(temperature["hot"] & target_temperature["low"], fan_speed["fast"]),
 
-        ctrl.Rule(temperature["cold"] & target_temperature["medium"], fan_speed["very_fast"]),
-        ctrl.Rule(temperature["cool"] & target_temperature["medium"], fan_speed["fast"]),
-        ctrl.Rule(temperature["comfortable"] & target_temperature["medium"], fan_speed["standard"]),
-        ctrl.Rule(temperature["warm"] & target_temperature["medium"], fan_speed["slow"]),
-        ctrl.Rule(temperature["hot"] & target_temperature["medium"], fan_speed["very_fast"]),
+    ctrl.Rule(temperature["cold"] & target_temperature["medium"], fan_speed["very_fast"]),
+    ctrl.Rule(temperature["cool"] & target_temperature["medium"], fan_speed["fast"]),
+    ctrl.Rule(temperature["comfortable"] & target_temperature["medium"], fan_speed["standard"]),
+    ctrl.Rule(temperature["warm"] & target_temperature["medium"], fan_speed["slow"]),
+    ctrl.Rule(temperature["hot"] & target_temperature["medium"], fan_speed["very_fast"]),
 
-        ctrl.Rule(temperature["cold"] & target_temperature["high"], fan_speed["very_fast"]),
-        ctrl.Rule(temperature["cool"] & target_temperature["high"], fan_speed["very_fast"]),
-        ctrl.Rule(temperature["comfortable"] & target_temperature["high"], fan_speed["fast"]),
-        ctrl.Rule(temperature["warm"] & target_temperature["high"], fan_speed["standard"]),
-        ctrl.Rule(temperature["hot"] & target_temperature["high"], fan_speed["slow"]),
+    ctrl.Rule(temperature["cold"] & target_temperature["high"], fan_speed["very_fast"]),
+    ctrl.Rule(temperature["cool"] & target_temperature["high"], fan_speed["very_fast"]),
+    ctrl.Rule(temperature["comfortable"] & target_temperature["high"], fan_speed["fast"]),
+    ctrl.Rule(temperature["warm"] & target_temperature["high"], fan_speed["standard"]),
+    ctrl.Rule(temperature["hot"] & target_temperature["high"], fan_speed["slow"]),
 
-        # Rules for mode influencing fan_speed
-        ctrl.Rule(mode["dehumidify"], fan_speed["very_fast"] % 0.6),
-        ctrl.Rule(mode["adjust_temperature"], fan_speed["standard"] % 0.4),
-    ]
+    # Rules for mode influencing fan_speed
+    ctrl.Rule(mode["dehumidify"], fan_speed["very_fast"] % 0.6),
+    ctrl.Rule(mode["adjust_temperature"], fan_speed["standard"] % 0.4),
+]
 
 
-ac_ctrl = ctrl.ControlSystem(get_rules())
+ac_ctrl = ctrl.ControlSystem(RULES)
 
 ac = ctrl.ControlSystemSimulation(ac_ctrl)
 
