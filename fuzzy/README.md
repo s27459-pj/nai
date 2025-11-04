@@ -10,7 +10,8 @@
 Make sure you have uv and python, see "Environment Setup" in the main [README.md](../README.md) for more detailed instructions.
 
 When inside the `fuzzy` directory:
-- Run the program: `uv run control.py`
+- Run the control with raw data: `uv run control.py`
+- Run the simulator: `uv run simulator.py`
 
 ## Inputs and Outputs
 

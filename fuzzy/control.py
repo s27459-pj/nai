@@ -34,16 +34,19 @@ AIR_CONDITIONER_RULES = [
     ctrl.Rule(humidity["dry"] | humidity["comfortable"], mode["adjust_temperature"]),
     ctrl.Rule(humidity["sticky"], mode["dehumidify"]),
     # Rules for `fan_speed` based on `temperature` and `target_temperature`
+    # Target -> low
     ctrl.Rule(temperature["cold"] & target_temperature["low"], fan_speed["very_fast"]),
     ctrl.Rule(temperature["cool"] & target_temperature["low"], fan_speed["standard"]),
     ctrl.Rule(temperature["comfortable"] & target_temperature["low"], fan_speed["very_slow"]),
     ctrl.Rule(temperature["warm"] & target_temperature["low"], fan_speed["standard"]),
     ctrl.Rule(temperature["hot"] & target_temperature["low"], fan_speed["fast"]),
+    # Target -> medium
     ctrl.Rule(temperature["cold"] & target_temperature["medium"], fan_speed["very_fast"]),
     ctrl.Rule(temperature["cool"] & target_temperature["medium"], fan_speed["fast"]),
     ctrl.Rule(temperature["comfortable"] & target_temperature["medium"], fan_speed["standard"]),
     ctrl.Rule(temperature["warm"] & target_temperature["medium"], fan_speed["slow"]),
     ctrl.Rule(temperature["hot"] & target_temperature["medium"], fan_speed["very_fast"]),
+    # Target -> high
     ctrl.Rule(temperature["cold"] & target_temperature["high"], fan_speed["very_fast"]),
     ctrl.Rule(temperature["cool"] & target_temperature["high"], fan_speed["very_fast"]),
     ctrl.Rule(temperature["comfortable"] & target_temperature["high"], fan_speed["fast"]),
