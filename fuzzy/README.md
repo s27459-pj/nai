@@ -10,7 +10,7 @@
 Make sure you have uv and python, see "Environment Setup" in the main [README.md](../README.md) for more detailed instructions.
 
 When inside the `fuzzy` directory:
-- Run the program: `uv run main.py`
+- Run the program: `uv run control.py`
 
 ## Inputs and Outputs
 
