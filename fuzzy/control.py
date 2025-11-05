@@ -33,6 +33,10 @@ AIR_CONDITIONER_RULES = [
     # Rules for `mode` based on `humidity`
     ctrl.Rule(humidity["dry"] | humidity["comfortable"], mode["adjust_temperature"]),
     ctrl.Rule(humidity["sticky"], mode["dehumidify"]),
+    # Rules for `fan_speed` based on `humidity`
+    ctrl.Rule(humidity["sticky"], fan_speed["very_fast"]),
+    ctrl.Rule(humidity["comfortable"], fan_speed["slow"]),
+    ctrl.Rule(humidity["dry"], fan_speed["very_slow"]),
     # Rules for `fan_speed` based on `temperature` and `target_temperature`
     # Target -> low
     ctrl.Rule(temperature["cold"] & target_temperature["low"], fan_speed["very_fast"]),
