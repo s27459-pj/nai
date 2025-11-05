@@ -35,8 +35,3 @@ AC with 3 inputs:
   - \[0, 1\) -> adjust_temperature
   - \[1, 2\] -> dehumidify
 - fan_speed (0-100)
-
-## TODO
-
-- [ ] Simulation of a system using the AC controller
-- [ ] Terminal visualization of the simulation
