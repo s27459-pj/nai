@@ -9,7 +9,8 @@
 
 Make sure you have uv and python, see "Environment Setup" in the main [README.md](../README.md) for more detailed instructions.
 
-When inside the `game` directory:
+When inside the `3-game` directory:
+
 - Run the game: `uv run main.py`
 - Run tests: `uv run pytest`
 
@@ -38,10 +39,12 @@ Example turns:
 ![Example Turn](./assets/example-turn.png)
 
 On Player 2 turn (Move #26):
+
 - Player 2 placed their `[b]` token in column 2, which ocuppied the last available cell in that column (row 5)
 - Nothing else happened because there were no tokens to capture or score
 
 On Player 1 turn (Move #27):
+
 - Player 1 placed their `[w]` token in column 3, which fell to the first non-occupied cell in that column (row 3)
 - The token connected with two other `[b]` tokens (row 1 and 2) in that column, capturing them
 - After capturing, these three tokens were scored and removed from the board

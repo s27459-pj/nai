@@ -8,6 +8,6 @@ dependencies = []
 
 [tool.uv.workspace]
 members = [
-    "game",
-    "fuzzy",
+    "1-game",
+    "2-fuzzy",
 ]

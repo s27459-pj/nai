@@ -4,9 +4,63 @@ requires-python = ">=3.13"
 
 [manifest]
 members = [
-    "fuzzy",
-    "game",
+    "1-game",
+    "2-fuzzy",
     "nai",
+]
+
+[[package]]
+name = "1-game"
+version = "0.1.0"
+source = { virtual = "1-game" }
+dependencies = [
+    { name = "easyai" },
+]
+
+[package.dev-dependencies]
+dev = [
+    { name = "basedpyright" },
+    { name = "pytest" },
+    { name = "ruff" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "easyai", specifier = ">=2.0.12" }]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "basedpyright", specifier = ">=1.31.7" },
+    { name = "pytest", specifier = ">=8.4.2" },
+    { name = "ruff", specifier = ">=0.14.0" },
+]
+
+[[package]]
+name = "2-fuzzy"
+version = "0.1.0"
+source = { virtual = "2-fuzzy" }
+dependencies = [
+    { name = "numpy" },
+    { name = "scikit-fuzzy" },
+]
+
+[package.dev-dependencies]
+dev = [
+    { name = "basedpyright" },
+    { name = "pytest" },
+    { name = "ruff" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "numpy", specifier = ">=2.3.3" },
+    { name = "scikit-fuzzy", specifier = ">=0.5.0" },
+]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "basedpyright", specifier = ">=1.31.7" },
+    { name = "pytest", specifier = ">=8.4.2" },
+    { name = "ruff", specifier = ">=0.14.0" },
 ]
 
 [[package]]
@@ -40,60 +94,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/5f/f2/0f799df322bdeffd2dca758c9b64905b8cc7a27415701b751f415a81180b/easyAI-2.0.12.tar.gz", hash = "sha256:8c4d2d488bcd81578e1b48d38158bc50353dfd4ab3ab04e4ddac637e08378fbe", size = 29263, upload-time = "2021-08-12T12:42:12.172Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/63/2a/927324350557a2da87d59830588ce0c58f67e75384b55af4e82883f0b9cc/easyAI-2.0.12-py3-none-any.whl", hash = "sha256:9ad5444bdc729b60baa39c60d28dd9c677aaec12e27b7972183859f1a0946ee1", size = 42174, upload-time = "2021-08-12T12:42:10.885Z" },
-]
-
-[[package]]
-name = "fuzzy"
-version = "0.1.0"
-source = { virtual = "fuzzy" }
-dependencies = [
-    { name = "numpy" },
-    { name = "scikit-fuzzy" },
-]
-
-[package.dev-dependencies]
-dev = [
-    { name = "basedpyright" },
-    { name = "pytest" },
-    { name = "ruff" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "numpy", specifier = ">=2.3.3" },
-    { name = "scikit-fuzzy", specifier = ">=0.5.0" },
-]
-
-[package.metadata.requires-dev]
-dev = [
-    { name = "basedpyright", specifier = ">=1.31.7" },
-    { name = "pytest", specifier = ">=8.4.2" },
-    { name = "ruff", specifier = ">=0.14.0" },
-]
-
-[[package]]
-name = "game"
-version = "0.1.0"
-source = { virtual = "game" }
-dependencies = [
-    { name = "easyai" },
-]
-
-[package.dev-dependencies]
-dev = [
-    { name = "basedpyright" },
-    { name = "pytest" },
-    { name = "ruff" },
-]
-
-[package.metadata]
-requires-dist = [{ name = "easyai", specifier = ">=2.0.12" }]
-
-[package.metadata.requires-dev]
-dev = [
-    { name = "basedpyright", specifier = ">=1.31.7" },
-    { name = "pytest", specifier = ">=8.4.2" },
-    { name = "ruff", specifier = ">=0.14.0" },
 ]
 
 [[package]]
