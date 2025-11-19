@@ -6,6 +6,7 @@ requires-python = ">=3.13"
 members = [
     "1-game",
     "2-fuzzy",
+    "3-recommendation",
     "nai",
 ]
 
@@ -60,6 +61,25 @@ requires-dist = [
 dev = [
     { name = "basedpyright", specifier = ">=1.31.7" },
     { name = "pytest", specifier = ">=8.4.2" },
+    { name = "ruff", specifier = ">=0.14.0" },
+]
+
+[[package]]
+name = "3-recommendation"
+version = "0.1.0"
+source = { virtual = "3-recommendation" }
+
+[package.dev-dependencies]
+dev = [
+    { name = "basedpyright" },
+    { name = "ruff" },
+]
+
+[package.metadata]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "basedpyright", specifier = ">=1.31.7" },
     { name = "ruff", specifier = ">=0.14.0" },
 ]
 

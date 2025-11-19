@@ -19,3 +19,7 @@ See the [1-game/](./-1game) directory for details.
 ### 2. Fuzzy Logic 2025.10.18
 
 See the [2-fuzzy/](./2-fuzzy) directory for details.
+
+### 3. Recommendation Engine 2025.11.08
+
+See the [3-recommendation/](./3-recommendation) directory for details.
