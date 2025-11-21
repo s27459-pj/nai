@@ -11,6 +11,7 @@ Make sure you have uv and python, see "Environment Setup" in the main [README.md
 
 When inside the `3-recommendation` directory:
 
-- TODO: Example run
+## Example Usage
 
-TODO: System description
+Example run of the Recommendation system:
+![Example Run](./example.png)
