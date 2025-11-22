@@ -8,11 +8,11 @@ import json
 from typing import TypedDict, cast
 
 import pandas as pd
+from simple_term_menu import TerminalMenu
 from sklearn.cluster import KMeans
 
 CLUSTERS = 5
 RECOMMENDATIONS = 5
-RECOMMENDATION_USER = "Paweł Czapiewski"
 
 
 class Rating(TypedDict):
@@ -190,8 +190,18 @@ def print_recommendations(
             print(f"  Plot: {plot[:150]}{'...' if len(plot) > 150 else ''}")
 
 
+def prompt_target_user(available_users: list[User]) -> str:
+    options = [user["name"] for user in available_users]
+    menu = TerminalMenu(options, title="Dla kogo przygotować rekomendacje?")
+    selected_index = menu.show()
+    if selected_index is None:
+        raise ValueError("Didn't select a User")
+    return options[selected_index]
+
+
 def main() -> None:
     users = load_users()
+    user = prompt_target_user(users)
     ratings = flatten_ratings(users)
     movies = load_movies()
 
@@ -215,12 +225,12 @@ def main() -> None:
     # Cluster the rating data
     user_movie_with_clusters = user_movie_matrix.copy()
     user_movie_with_clusters["cluster"] = cluster_labels
-    if RECOMMENDATION_USER not in user_movie_with_clusters.index:
-        print(f"User '{RECOMMENDATION_USER}' not found in the dataset!")
+    if user not in user_movie_with_clusters.index:
+        print(f"User '{user}' not found in the dataset!")
         return
 
     # Find the target User's cluster
-    target_cluster = user_movie_with_clusters.loc[RECOMMENDATION_USER, "cluster"]
+    target_cluster = user_movie_with_clusters.loc[user, "cluster"]
     cluster_users = user_movie_with_clusters[
         user_movie_with_clusters["cluster"] == target_cluster
     ].index.tolist()
@@ -229,7 +239,7 @@ def main() -> None:
 
     # Compute recommendations for the target user
     recommendations, anti_recommendations = get_user_recommendations(
-        user_name=RECOMMENDATION_USER,
+        user_name=user,
         ratings=data,
         cluster_users=cluster_users,
         n=RECOMMENDATIONS,
@@ -237,12 +247,12 @@ def main() -> None:
     )
 
     print(f"\n{'=' * 50}")
-    print(f"Recommendations for {RECOMMENDATION_USER}:")
+    print(f"Recommendations for {user}:")
     print(f"{'=' * 50}")
     print_recommendations(recommendations, movies_by_id)
 
     print(f"\n{'=' * 50}")
-    print(f"Anti-recommendations for {RECOMMENDATION_USER}:")
+    print(f"Anti-recommendations for {user}:")
     print(f"{'=' * 50}")
     print_recommendations(anti_recommendations, movies_by_id)
 
