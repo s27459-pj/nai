@@ -11,6 +11,8 @@ Make sure you have uv and python, see "Environment Setup" in the main [README.md
 
 When inside the `3-recommendation` directory:
 
+- Run the recommendation engine: `uv run main.py`
+
 ## Example Usage
 
 Example runs of the Recommendation system:
