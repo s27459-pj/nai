@@ -13,5 +13,5 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v6
       - name: Run Tests
-        working-directory: ./game
+        working-directory: ./1-game
         run: uv run pytest
