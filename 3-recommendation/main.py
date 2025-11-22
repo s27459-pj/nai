@@ -209,7 +209,7 @@ def main() -> None:
     print(f"Average rating: {avg_rating:.2f}")
     print()
 
-    kmeans = KMeans(n_clusters=CLUSTERS)
+    kmeans = KMeans(n_clusters=CLUSTERS, random_state=123)
     cluster_labels = kmeans.fit_predict(user_movie_matrix)
 
     # Cluster the rating data
