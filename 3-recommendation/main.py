@@ -1,5 +1,5 @@
 """
-See README.md for running instructions, game rules and authors.
+See README.md for running instructions, examples and authors.
 """
 
 from __future__ import annotations
