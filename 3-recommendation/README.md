@@ -13,5 +13,7 @@ When inside the `3-recommendation` directory:
 
 ## Example Usage
 
-Example run of the Recommendation system:
-![Example Run](./example.png)
+Example runs of the Recommendation system:
+![Example Run 1](./assets/example-1.png)
+![Example Run 2](./assets/example-2.png)
+![Example Run 3](./assets/example-3.png)
