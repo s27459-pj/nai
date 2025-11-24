@@ -7,6 +7,7 @@ members = [
     "1-game",
     "2-fuzzy",
     "3-recommendation",
+    "4-classification",
     "nai",
 ]
 
@@ -66,6 +67,37 @@ dev = [
 name = "3-recommendation"
 version = "0.1.0"
 source = { virtual = "3-recommendation" }
+dependencies = [
+    { name = "matplotlib" },
+    { name = "numpy" },
+    { name = "pandas" },
+    { name = "scikit-learn" },
+]
+
+[package.dev-dependencies]
+dev = [
+    { name = "basedpyright" },
+    { name = "ruff" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "matplotlib", specifier = ">=3.10.7" },
+    { name = "numpy", specifier = ">=2.3.3" },
+    { name = "pandas", specifier = ">=2.3.3" },
+    { name = "scikit-learn", specifier = ">=1.7.2" },
+]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "basedpyright", specifier = ">=1.31.7" },
+    { name = "ruff", specifier = ">=0.14.0" },
+]
+
+[[package]]
+name = "4-classification"
+version = "0.1.0"
+source = { virtual = "4-classification" }
 dependencies = [
     { name = "matplotlib" },
     { name = "numpy" },

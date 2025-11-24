@@ -23,3 +23,7 @@ See the [2-fuzzy/](./2-fuzzy) directory for details.
 ### 3. Recommendation Engine 2025.11.08
 
 See the [3-recommendation/](./3-recommendation) directory for details.
+
+### 4. Classification 2025.11.22
+
+See the [4-classification/](./4-classification) directory for details.
