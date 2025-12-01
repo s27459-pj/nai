@@ -13,6 +13,12 @@ When inside the `4-classification` directory:
 
 - Run classification: `uv run main.py`
 
+## Observations
+
+- For our datasets, using the `libear` SVM kernel proved to be the most accurate from all available kernels
+- Visualizing an SVM is not trivial for more than 2 features, because we want to display it on a 2D scatter plot, which is impossible with more than 2 dimensions out of the box
+    - We circumvent this by simplifying the dataset into 2D, training another SVM on the simplified dataset and graphing it
+
 ## Example Usage
 
 ### Wheat Seeds Dataset
