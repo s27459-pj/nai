@@ -1,3 +1,7 @@
+"""
+See README.md for running instructions, examples and authors.
+"""
+
 from typing import Any
 
 import matplotlib.pyplot as plt
