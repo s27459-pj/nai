@@ -1,77 +1,70 @@
+from typing import Any
+
 import matplotlib.pyplot as plt
-import numpy as np
-from sklearn.datasets import load_iris
+import pandas as pd
+from sklearn.metrics import accuracy_score, classification_report
 from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.svm import SVC
 from sklearn.tree import DecisionTreeClassifier, plot_tree
 
 
-def print_tree(clf: DecisionTreeClassifier) -> None:
-    n_nodes = clf.tree_.node_count
-    children_left = clf.tree_.children_left
-    children_right = clf.tree_.children_right
-    feature = clf.tree_.feature
-    threshold = clf.tree_.threshold
-    values = clf.tree_.value
+def split_data(data: pd.DataFrame) -> list[Any]:
+    # TODO: Parametrize which column to classify by
+    X = data.iloc[:, :-1]
+    y = data.iloc[:, -1]
 
-    node_depth = np.zeros(shape=n_nodes, dtype=np.int64)
-    is_leaves = np.zeros(shape=n_nodes, dtype=bool)
-    stack = [(0, 0)]  # start with the root node id (0) and its depth (0)
-    while len(stack) > 0:
-        # `pop` ensures each node is only visited once
-        node_id, depth = stack.pop()
-        node_depth[node_id] = depth
-
-        # If the left and right child of a node is not the same we have a split
-        # node
-        is_split_node = children_left[node_id] != children_right[node_id]
-        # If a split node, append left and right children and depth to `stack`
-        # so we can loop through them
-        if is_split_node:
-            stack.append((children_left[node_id], depth + 1))
-            stack.append((children_right[node_id], depth + 1))
-        else:
-            is_leaves[node_id] = True
-
-    print(
-        "The binary tree structure has {n} nodes and has "
-        "the following tree structure:\n".format(n=n_nodes)
+    return train_test_split(
+        X,
+        y,
+        test_size=0.3,
+        random_state=0,
     )
-    for i in range(n_nodes):
-        if is_leaves[i]:
-            print(
-                "{space}node={node} is a leaf node with value={value}.".format(
-                    space=node_depth[i] * "\t", node=i, value=np.around(values[i], 3)
-                )
-            )
-        else:
-            print(
-                "{space}node={node} is a split node with value={value}: "
-                "go to node {left} if X[:, {feature}] <= {threshold} "
-                "else to node {right}.".format(
-                    space=node_depth[i] * "\t",
-                    node=i,
-                    left=children_left[i],
-                    feature=feature[i],
-                    threshold=threshold[i],
-                    right=children_right[i],
-                    value=np.around(values[i], 3),
-                )
-            )
 
 
-def main():
-    iris = load_iris()
-    X = iris.data
-    y = iris.target
-    X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=0)
+def rate_model(X_test, y_test, classifier, name) -> None:
+    predictions = classifier.predict(X_test)
+    accuracy = accuracy_score(y_test, predictions)
+    print(f"Model: {name}")
+    print(f"Accuracy: {accuracy:.5f}")
+    print("Classification Report:")
+    print(classification_report(y_test, predictions))
 
-    clf = DecisionTreeClassifier(max_leaf_nodes=3, random_state=0)
-    clf.fit(X_train, y_train)
-    print("Accuracy:", clf.score(X_test, y_test))
-    plot_tree(clf, proportion=True)
+
+def train_decision_tree(data: pd.DataFrame) -> None:
+    X_train, X_test, y_train, y_test = split_data(data)
+
+    dtc = DecisionTreeClassifier(max_leaf_nodes=3, random_state=0)
+    dtc.fit(X_train, y_train)
+
+    plot_tree(dtc, proportion=True)
     plt.show()
 
-    # print_tree(clf)
+    rate_model(X_test, y_test, dtc, "Decision Tree")
+
+
+def train_svc(data: pd.DataFrame) -> None:
+    X_train, X_test, y_train, y_test = split_data(data)
+
+    scaler = StandardScaler()
+    X_train_scaled = scaler.fit_transform(X_train)
+    X_test_scaled = scaler.transform(X_test)
+
+    svc = SVC(kernel="linear", class_weight="balanced")
+    svc.fit(X_train_scaled, y_train)
+
+    rate_model(X_test_scaled, y_test, svc, "SVC")
+
+
+def main() -> None:
+    seeds = pd.read_csv("data/seeds_dataset.csv", delimiter=",", header=None)
+    train_decision_tree(seeds)
+    train_svc(seeds)
+
+    apple_quality = pd.read_csv("data/apple_quality.csv", delimiter=",", header=0)
+    apple_quality.drop("A_id", axis=1, inplace=True)
+    train_decision_tree(apple_quality)
+    train_svc(apple_quality)
 
 
 if __name__ == "__main__":
