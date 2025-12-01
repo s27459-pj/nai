@@ -16,6 +16,12 @@ from sklearn.tree import DecisionTreeClassifier, plot_tree
 
 
 def split_data(data: pd.DataFrame) -> list[Any]:
+    """
+    Split input dataset into training and testing sets
+
+    Use the last column as the target variable and the rest as features.
+    """
+
     X = data.iloc[:, :-1]
     y = data.iloc[:, -1]
     return train_test_split(
@@ -27,6 +33,8 @@ def split_data(data: pd.DataFrame) -> list[Any]:
 
 
 def rate_model(X_test: pd.DataFrame, y_test: pd.Series, classifier, name: str) -> None:
+    """Evaluate the performance of a classifier on a test set"""
+
     predictions = classifier.predict(X_test)
     accuracy = accuracy_score(y_test, predictions)
     print(f"Model: {name}")
@@ -36,6 +44,8 @@ def rate_model(X_test: pd.DataFrame, y_test: pd.Series, classifier, name: str) -
 
 
 def train_decision_tree(data: pd.DataFrame, name: str) -> None:
+    """Train a decision tree classifier on the given dataset"""
+
     X_train, X_test, y_train, y_test = split_data(data)
 
     dtc = DecisionTreeClassifier(max_leaf_nodes=3, random_state=0)
@@ -93,6 +103,8 @@ def visualize_svm(X_train: pd.DataFrame, y_train: pd.Series, name: str) -> None:
 
 
 def train_svm(data: pd.DataFrame, name: str) -> None:
+    """Train a support vector machine classifier on the given dataset"""
+
     X_train, X_test, y_train, y_test = split_data(data)
 
     # SVCs are sensitive to scaling, so we scale the data before training/testing

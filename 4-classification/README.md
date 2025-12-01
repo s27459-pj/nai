@@ -17,7 +17,7 @@ When inside the `4-classification` directory:
 
 ### Wheat Seeds Dataset
 
-https://machinelearningmastery.com/standard-machine-learning-datasets/
+Dataset: https://machinelearningmastery.com/standard-machine-learning-datasets/
 
 ![Wheat Seeds - Rating](./assets/wheat_seeds_rating.png)
 ![Wheat Seeds - Decision Tree Visualization](./assets/wheat_seeds_decision_tree.png)
@@ -25,7 +25,7 @@ https://machinelearningmastery.com/standard-machine-learning-datasets/
 
 ### Apple Quality Dataset
 
-https://www.kaggle.com/datasets/nelgiriyewithana/apple-quality
+Dataset: https://www.kaggle.com/datasets/nelgiriyewithana/apple-quality
 
 ![Apple Quality - Rating](./assets/apple_quality_rating.png)
 ![Apple Quality - Decision Tree Visualization](./assets/apple_quality_decision_tree.png)
