@@ -106,7 +106,7 @@ def train_svm(data: pd.DataFrame, name: str) -> None:
 def main() -> None:
     # Wheat Seeds dataset
     # https://machinelearningmastery.com/standard-machine-learning-datasets/
-    seeds = pd.read_csv("data/seeds_dataset.csv", delimiter=",", header=None)
+    seeds = pd.read_csv("data/wheat_seeds.csv", delimiter=",", header=None)
     train_decision_tree(seeds, "Wheat Seeds - Decision Tree")
     train_svm(seeds, "Wheat Seeds - SVM")
 
