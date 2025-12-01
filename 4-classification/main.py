@@ -102,7 +102,7 @@ def visualize_svm(X_train: pd.DataFrame, y_train: pd.Series, name: str) -> None:
     plt.show()
 
 
-def train_svm(data: pd.DataFrame, name: str) -> None:
+def train_svm(data: pd.DataFrame, name: str, kernel: str = "rbf") -> None:
     """Train a support vector machine classifier on the given dataset"""
 
     X_train, X_test, y_train, y_test = split_data(data)
@@ -112,7 +112,7 @@ def train_svm(data: pd.DataFrame, name: str) -> None:
     X_train_scaled = scaler.fit_transform(X_train)
     X_test_scaled: pd.DataFrame = scaler.transform(X_test)  # type: ignore[assignment]
 
-    svc = SVC(kernel="linear", class_weight="balanced")
+    svc = SVC(kernel=kernel, class_weight="balanced")
     svc.fit(X_train_scaled, y_train)
 
     rate_model(X_test_scaled, y_test, svc, name)
@@ -124,14 +124,14 @@ def main() -> None:
     # https://machinelearningmastery.com/standard-machine-learning-datasets/
     seeds = pd.read_csv("data/wheat_seeds.csv", delimiter=",", header=None)
     train_decision_tree(seeds, "Wheat Seeds - Decision Tree")
-    train_svm(seeds, "Wheat Seeds - SVM")
+    train_svm(seeds, "Wheat Seeds - SVM", kernel="linear")
 
     # Apple Quality dataset
     # https://www.kaggle.com/datasets/nelgiriyewithana/apple-quality
     apple_quality = pd.read_csv("data/apple_quality.csv", delimiter=",", header=0)
     apple_quality.drop("A_id", axis=1, inplace=True)
     train_decision_tree(apple_quality, "Apple Quality - Decision Tree")
-    train_svm(apple_quality, "Apple Quality - SVM")
+    train_svm(apple_quality, "Apple Quality - SVM", kernel="rbf")
 
 
 if __name__ == "__main__":
