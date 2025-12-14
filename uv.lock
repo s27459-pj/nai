@@ -8,6 +8,7 @@ members = [
     "2-fuzzy",
     "3-recommendation",
     "4-classification",
+    "5-neural-net",
     "nai",
 ]
 
@@ -117,6 +118,35 @@ requires-dist = [
     { name = "numpy", specifier = ">=2.3.3" },
     { name = "pandas", specifier = ">=2.3.3" },
     { name = "scikit-learn", specifier = ">=1.7.2" },
+]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "basedpyright", specifier = ">=1.31.7" },
+    { name = "ruff", specifier = ">=0.14.0" },
+]
+
+[[package]]
+name = "5-neural-net"
+version = "0.1.0"
+source = { virtual = "5-neural-net" }
+dependencies = [
+    { name = "matplotlib" },
+    { name = "numpy" },
+    { name = "pandas" },
+]
+
+[package.dev-dependencies]
+dev = [
+    { name = "basedpyright" },
+    { name = "ruff" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "matplotlib", specifier = ">=3.10.7" },
+    { name = "numpy", specifier = ">=2.3.3" },
+    { name = "pandas", specifier = ">=2.3.3" },
 ]
 
 [package.metadata.requires-dev]
