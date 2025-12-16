@@ -16,7 +16,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from torch.utils.data import DataLoader, TensorDataset
 
-from util import plot_training_loss
+from util import plot_training_loss, train_model
 
 RANDOM_SEED = 42
 TEST_SIZE = 0.3
@@ -135,41 +135,6 @@ def prepare_data_loaders(
     return train_loader, test_loader
 
 
-def train_model(
-    model: nn.Module,
-    train_loader: DataLoader,
-    criterion: nn.Module,
-    optimizer: optim.Optimizer,
-    num_epochs: int = NUM_EPOCHS,
-) -> list[float]:
-    """Train the neural network and return training loss history"""
-
-    model.train()
-    loss_history: list[float] = []
-
-    for epoch in range(num_epochs):
-        epoch_loss = 0.0
-        for X_batch, y_batch in train_loader:
-            # Forward pass
-            outputs = model(X_batch)
-            loss = criterion(outputs, y_batch)
-
-            # Backward pass and optimization
-            optimizer.zero_grad()
-            loss.backward()
-            optimizer.step()
-
-            epoch_loss += loss.item()
-
-        avg_loss = epoch_loss / len(train_loader)
-        loss_history.append(avg_loss)
-
-        if (epoch + 1) % 10 == 0:
-            print(f"Epoch [{epoch + 1}/{num_epochs}], Loss: {avg_loss:.4f}")
-
-    return loss_history
-
-
 def evaluate_model(
     model: nn.Module,
     test_loader: DataLoader,
@@ -265,7 +230,13 @@ def train_neural_network(data: pd.DataFrame) -> None:
     optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE)
 
     # Train the model
-    loss_history = train_model(model, train_loader, criterion, optimizer, NUM_EPOCHS)
+    loss_history = train_model(
+        model,
+        train_loader,
+        criterion,
+        optimizer,
+        NUM_EPOCHS,
+    )
 
     predictions, targets = evaluate_model(model, test_loader)
 
