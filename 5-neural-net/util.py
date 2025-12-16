@@ -1,9 +1,11 @@
 import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
 import seaborn as sns
 import torch
 import torch.nn as nn
 import torch.optim as optim
+from sklearn.metrics import accuracy_score, confusion_matrix
 from torch.utils.data import DataLoader
 
 
@@ -33,6 +35,40 @@ def plot_training_loss(loss_history: list[float]) -> None:
     ax.set_title("Training Loss Over Time", fontsize=14, fontweight="bold", pad=20)
 
     ax.fill_between(loss_df["epoch"], loss_df["loss"], alpha=0.3, color="#2E86AB")
+
+    plt.tight_layout()
+    plt.show()
+
+
+def plot_confusion_matrix(
+    predictions: np.ndarray,
+    targets: np.ndarray,
+    class_names: list[str],
+) -> None:
+    """Plot confusion matrix for predictions"""
+
+    cm = confusion_matrix(targets, predictions)
+
+    _, ax = plt.subplots(figsize=(12, 10))
+
+    sns.heatmap(
+        cm,
+        annot=True,
+        fmt="d",
+        cmap="Blues",
+        square=True,
+        cbar_kws={"label": "Count"},
+        xticklabels=class_names,
+        yticklabels=class_names,
+        linewidths=0.5,
+        linecolor="gray",
+        ax=ax,
+        annot_kws={"size": 10, "weight": "bold"},
+    )
+
+    ax.set_xlabel("Predicted Label", fontsize=12, fontweight="bold")
+    ax.set_ylabel("True Label", fontsize=12, fontweight="bold")
+    ax.set_title("Confusion Matrix", fontsize=14, fontweight="bold", pad=20)
 
     plt.tight_layout()
     plt.show()
@@ -76,3 +112,32 @@ def train_model(
             print(f"Epoch [{epoch + 1}/{num_epochs}], Loss: {avg_loss:.4f}")
 
     return loss_history
+
+
+def evaluate_model(
+    model: nn.Module,
+    test_loader: DataLoader,
+    device: torch.device | None = None,
+) -> tuple[np.ndarray, np.ndarray, float]:
+    """Evaluate the model on test data and print metrics"""
+
+    model.eval()
+    all_predictions: list[np.ndarray] = []
+    all_targets: list[np.ndarray] = []
+
+    with torch.no_grad():
+        for X_batch, y_batch in test_loader:
+            if device is not None:
+                X_batch, y_batch = X_batch.to(device), y_batch.to(device)
+
+            outputs = model(X_batch)
+            _, predicted = torch.max(outputs, 1)
+
+            all_predictions.extend(predicted.cpu().numpy())
+            all_targets.extend(y_batch.cpu().numpy())
+
+    predictions = np.array(all_predictions)
+    targets = np.array(all_targets)
+    accuracy = accuracy_score(targets, predictions)
+
+    return predictions, targets, accuracy

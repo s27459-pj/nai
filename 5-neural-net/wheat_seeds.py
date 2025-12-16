@@ -4,19 +4,17 @@ See README.md for running instructions, examples and authors.
 
 from typing import Any
 
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import seaborn as sns
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+from sklearn.metrics import classification_report
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from torch.utils.data import DataLoader, TensorDataset
 
-from util import plot_training_loss, train_model
+from util import evaluate_model, plot_confusion_matrix, plot_training_loss, train_model
 
 RANDOM_SEED = 42
 TEST_SIZE = 0.3
@@ -135,80 +133,6 @@ def prepare_data_loaders(
     return train_loader, test_loader
 
 
-def evaluate_model(
-    model: nn.Module,
-    test_loader: DataLoader,
-) -> tuple[np.ndarray, np.ndarray]:
-    """Evaluate the model on test data and print metrics"""
-
-    model.eval()
-    all_predictions: list[np.ndarray] = []
-    all_targets: list[np.ndarray] = []
-
-    with torch.no_grad():
-        for X_batch, y_batch in test_loader:
-            outputs = model(X_batch)
-            _, predicted = torch.max(outputs, 1)
-            all_predictions.extend(predicted.numpy())
-            all_targets.extend(y_batch.numpy())
-
-    predictions = np.array(all_predictions)
-    targets = np.array(all_targets)
-
-    # Convert back to original class labels (1, 2, 3)
-    predictions_original = predictions + 1
-    targets_original = targets + 1
-
-    accuracy = accuracy_score(targets, predictions)
-
-    print(f"Accuracy: {accuracy:.5f}")
-    print("\nClassification Report:")
-    print(
-        classification_report(
-            targets_original,
-            predictions_original,
-            target_names=["Class 1", "Class 2", "Class 3"],
-        )
-    )
-
-    return predictions, targets
-
-
-def plot_confusion_matrix(predictions: np.ndarray, targets: np.ndarray) -> None:
-    """Plot confusion matrix for the predictions"""
-
-    # Convert back to original class labels
-    predictions_original = predictions + 1
-    targets_original = targets + 1
-
-    cm = confusion_matrix(targets_original, predictions_original)
-
-    _, ax = plt.subplots(figsize=(10, 8))
-
-    classes = ["Class 1", "Class 2", "Class 3"]
-    sns.heatmap(
-        cm,
-        annot=True,
-        fmt="d",
-        cmap="Blues",
-        square=True,
-        cbar_kws={"label": "Count"},
-        xticklabels=classes,
-        yticklabels=classes,
-        linewidths=0.5,
-        linecolor="gray",
-        ax=ax,
-        annot_kws={"size": 14, "weight": "bold"},
-    )
-
-    ax.set_xlabel("Predicted Label", fontsize=12, fontweight="bold")
-    ax.set_ylabel("True Label", fontsize=12, fontweight="bold")
-    ax.set_title("Confusion Matrix", fontsize=14, fontweight="bold", pad=20)
-
-    plt.tight_layout()
-    plt.show()
-
-
 def train_neural_network(data: pd.DataFrame) -> None:
     """Train and evaluate a neural network on the wheat seeds dataset"""
 
@@ -238,10 +162,25 @@ def train_neural_network(data: pd.DataFrame) -> None:
         NUM_EPOCHS,
     )
 
-    predictions, targets = evaluate_model(model, test_loader)
+    predictions, targets, accuracy = evaluate_model(model, test_loader)
+    class_names = ["Class 1", "Class 2", "Class 3"]
+
+    # Convert back to original class labels
+    predictions_original = predictions + 1
+    targets_original = targets + 1
+
+    print(f"Accuracy: {accuracy:.5f}")
+    print("\nClassification Report:")
+    print(
+        classification_report(
+            targets_original,
+            predictions_original,
+            target_names=class_names,
+        )
+    )
 
     plot_training_loss(loss_history)
-    plot_confusion_matrix(predictions, targets)
+    plot_confusion_matrix(predictions_original, targets_original, class_names)
 
 
 def main() -> None:
