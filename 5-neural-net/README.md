@@ -11,12 +11,14 @@ Make sure you have uv and python, see "Environment Setup" in the main [README.md
 
 When inside the `5-neural-net` directory:
 
-- Run the neural network: `uv run main.py`
-
-## Observations
-
-TODO
+- Wheat seeds dataset: `uv run wheat_seeds.py`
 
 ## Example Usage
 
-TODO
+### Wheat Seeds Dataset
+
+Dataset: https://machinelearningmastery.com/standard-machine-learning-datasets/
+
+![Wheat Seeds - Output](./assets/wheat_seeds_output.png)
+![Wheat Seeds - Training Loss](./assets/wheat_seeds_loss.png)
+![Wheat Seeds - Confusion Matrix](./assets/wheat_seeds_confusion_matrix.png)
