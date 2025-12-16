@@ -14,6 +14,17 @@ When inside the `5-neural-net` directory:
 - Wheat seeds dataset: `uv run wheat_seeds.py`
 - CIFAR10 dataset: `uv run cifar10.py`
 - Fashion MNIST dataset: `uv run fashion.py`
+- Kuzushiji-MNIST dataset: `uv run hiragana.py`
+
+## Observations
+
+### Decision Tree/SVM vs Neural Network
+
+- Decision Tree accuracy: 92.06%
+- SVM accuracy: 93.65%
+- Neural Network accuracy: 95.24%
+
+The neural network with 200 epochs and 2 hidden layers gives a better accuracy than the decision tree and SVM models, but takes much longer to train and requires more computational resources.
 
 ## Example Usage
 
@@ -53,3 +64,12 @@ Dataset: https://github.com/zalandoresearch/fashion-mnist
 ![Fashion (small) - Output (end)](./assets/fashion_small_output_2.png)
 ![Fashion (small) - Training Loss](./assets/fashion_small_loss.png)
 ![Fashion (small) - Confusion Matrix](./assets/fashion_small_confusion_matrix.png)
+
+### Kuzushiji-MNIST
+
+Dataset: https://github.com/rois-codh/kmnist
+
+![Hiragana - Output (start)](./assets/hiragana_output_1.png)
+![Hiragana - Output (end)](./assets/hiragana_output_2.png)
+![Hiragana - Training Loss](./assets/hiragana_loss.png)
+![Hiragana - Confusion Matrix](./assets/hiragana_confusion_matrix.png)
