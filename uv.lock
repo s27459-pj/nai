@@ -9,6 +9,7 @@ members = [
     "3-recommendation",
     "4-classification",
     "5-neural-net",
+    "6-computer-vision",
     "nai",
 ]
 
@@ -158,6 +159,25 @@ requires-dist = [
     { name = "torch", specifier = ">=2.9.1" },
     { name = "torchvision", specifier = ">=0.24.1" },
 ]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "basedpyright", specifier = ">=1.31.7" },
+    { name = "ruff", specifier = ">=0.14.0" },
+]
+
+[[package]]
+name = "6-computer-vision"
+version = "0.1.0"
+source = { virtual = "6-computer-vision" }
+
+[package.dev-dependencies]
+dev = [
+    { name = "basedpyright" },
+    { name = "ruff" },
+]
+
+[package.metadata]
 
 [package.metadata.requires-dev]
 dev = [

@@ -27,3 +27,11 @@ See the [3-recommendation/](./3-recommendation) directory for details.
 ### 4. Classification 2025.11.22
 
 See the [4-classification/](./4-classification) directory for details.
+
+### 5. Neural Network 2025.12.06
+
+See the [5-neural-net/](./5-neural-net) directory for details.
+
+### 6. Computer Vision 2025.12.20
+
+See the [6-computer-vision/](./6-computer-vision) directory for details.

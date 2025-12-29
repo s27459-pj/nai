@@ -13,4 +13,5 @@ members = [
     "3-recommendation",
     "4-classification",
     "5-neural-net",
+    "6-computer-vision",
 ]
