@@ -11,11 +11,12 @@ Make sure you have uv and python, see "Environment Setup" in the main [README.md
 
 When inside the `6-computer-vision` directory:
 
-TODO: Running instructions
+- Run the program: `uv run main.py`
 
 ## Observations
 
-TODO: Observations
+- Detecting faces and eyes in a live camera feed is pretty fast, so it can be done in real-time
+- Playing a video in the same main loop as processing the camera feed is possible, but it reduces the frame rate of the played video down to how fast we can process camera frames
 
 ## Example Usage
 
