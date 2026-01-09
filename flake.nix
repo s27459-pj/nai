@@ -19,6 +19,7 @@
             python313Packages.scipy
             python313Packages.networkx
             python313Packages.matplotlib
+            python313Packages.opencv4
             uv
           ];
         };
