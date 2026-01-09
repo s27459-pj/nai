@@ -20,4 +20,4 @@ When inside the `6-computer-vision` directory:
 
 ## Example Usage
 
-TODO: Example usage
+[example.mp4](https://github.com/user-attachments/assets/053b2c10-34ae-464a-8df2-afc30e4b68b7)
