@@ -206,7 +206,9 @@ source = { virtual = "7-reinforcement-learning" }
 dependencies = [
     { name = "ale-py" },
     { name = "gymnasium" },
+    { name = "matplotlib" },
     { name = "numpy" },
+    { name = "torch" },
 ]
 
 [package.dev-dependencies]
@@ -219,7 +221,9 @@ dev = [
 requires-dist = [
     { name = "ale-py", specifier = ">=0.11.2" },
     { name = "gymnasium", specifier = ">=1.2.3" },
+    { name = "matplotlib", specifier = ">=3.10.8" },
     { name = "numpy", specifier = ">=2.4.0" },
+    { name = "torch", specifier = ">=2.9.1" },
 ]
 
 [package.metadata.requires-dev]

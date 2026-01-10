@@ -6,6 +6,15 @@ from enum import Enum
 
 import ale_py
 import gymnasium as gym
+import torch
+
+device = torch.device(
+    "cuda"
+    if torch.cuda.is_available()
+    else "mps"
+    if torch.backends.mps.is_available()
+    else "cpu"
+)
 
 
 class Action(int, Enum):
@@ -33,21 +42,23 @@ def main() -> None:
     gym.register_envs(ale_py)
 
     # https://ale.farama.org/environments/pong/
-    env = gym.make("ALE/Pong-v5", render_mode="human")
+    env = gym.make("PongNoFrameskip-v4", render_mode="human", obs_type="grayscale")
+    n_actions = env.action_space.n  # type: ignore
 
     observation, info = env.reset(seed=42)
+    n_observations = len(observation)
 
-    for i in range(1000):
-        # TODO: Select action using an agent (reinforcement learning)
+    score = 0.0
+    while True:
         action = env.action_space.sample()
-
         observation, reward, terminated, truncated, info = env.step(action)
+        score += float(reward)
 
-        print(f"[{i:>2}] {action=} {reward=} {info=}")
+        print(f"{action=} {reward=} {score=} {info=}")
 
         if terminated or truncated:
-            print("Terminated or truncated -> reset")
-            observation, info = env.reset()
+            print(f"Your final score is {score}")
+            break
 
     env.close()
 
