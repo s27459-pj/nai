@@ -15,8 +15,8 @@ When inside the `7-reinforcement-learning` directory:
 
 ## Observations
 
-TODO
+- After training the model for 500 episodes, which took 1h36m50s it's getting some wins, but still losing a lot.
 
 ## Example Usage
 
-TODO
+![Output of the agent training](./assets/training.png)
