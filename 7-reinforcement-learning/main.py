@@ -122,7 +122,7 @@ class Agent:
         # Hyperparameters
         self.epsilon = 1.0
         self.epsilon_min = 0.1
-        self.epsilon_decay = 0.995
+        self.epsilon_decay_frames = 1_00_0_000  # Decay epsilon over 1M frames
         self.gamma = 0.99
         self.batch_size = 32
         self.target_update_freq = 1000
@@ -179,8 +179,10 @@ class Agent:
         if self.steps % self.target_update_freq == 0:
             self.target_net.load_state_dict(self.policy_net.state_dict())
 
-        # Decay epsilon
-        self.epsilon = max(self.epsilon_min, self.epsilon * self.epsilon_decay)
+        # Decay epsilon linearly per training step
+        # Linear decay: epsilon decreases from 1.0 to 0.1 over epsilon_decay_frames
+        epsilon_decay_per_step = (1.0 - self.epsilon_min) / self.epsilon_decay_frames
+        self.epsilon = max(self.epsilon_min, self.epsilon - epsilon_decay_per_step)
 
     def save_checkpoint(self, path: FileLike, episode: int) -> None:
         torch.save(
