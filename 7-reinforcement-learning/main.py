@@ -22,10 +22,8 @@ from torch.types import FileLike
 EPISODES = 500
 # How many frames to stack before saving to memory
 FRAME_STACK_SIZE = 4
-# How many frames to collect before starting training
+# How many steps to collect before starting training
 WARMUP_STEPS = 10_000
-# Train every N frames
-TRAIN_FREQUENCY = 4
 
 device = torch.device(
     "cuda"
@@ -223,7 +221,7 @@ def main() -> None:
 
     print(f"Using device: {device}")
 
-    env = gym.make("PongNoFrameskip-v4", render_mode="human", obs_type="grayscale")
+    env = gym.make("ALE/Pong-v5", render_mode="human", obs_type="grayscale")
     n_actions = env.action_space.n  # type: ignore
 
     agent = Agent(n_actions)
@@ -268,8 +266,8 @@ def main() -> None:
             transition = Transition(state, action, float(reward), next_state, done)
             agent.memory.push(transition)
 
-            # Only train after warm-up period and every TRAIN_FREQUENCY frames
-            if total_steps >= WARMUP_STEPS and total_steps % TRAIN_FREQUENCY == 0:
+            # Only train after warm-up period
+            if total_steps >= WARMUP_STEPS:
                 agent.train_step()
 
             state = next_state
