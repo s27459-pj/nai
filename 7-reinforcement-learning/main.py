@@ -19,11 +19,11 @@ from torch.types import FileLike
 # Training parameters
 # ===================
 # How many episodes to train
-EPISODES = 500
+EPISODES = 1_000
 # How many frames to stack before saving to memory
 FRAME_STACK_SIZE = 4
 # How many steps to collect before starting training
-WARMUP_STEPS = 10_000
+WARMUP_STEPS = 100_000
 
 device = torch.device(
     "cuda"
