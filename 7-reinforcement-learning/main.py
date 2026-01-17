@@ -212,18 +212,22 @@ def main() -> None:
     parser.add_argument("--save-checkpoints", action="store_true", default=False)
     parser.add_argument("--checkpoint-dir", type=pathlib.Path)
     parser.add_argument("--load-checkpoint", type=pathlib.Path)
+    parser.add_argument("--render", action="store_true", default=False)
     parser.add_argument("--verbose", action="store_true", default=False)
     args = parser.parse_args()
     save_checkpoints: bool = args.save_checkpoints
     checkpoint_dir: pathlib.Path = args.checkpoint_dir or pathlib.Path("checkpoints")
     load_checkpoint: pathlib.Path | None = args.load_checkpoint
+    render: bool = args.render
     verbose: bool = args.verbose
 
     gym.register_envs(ale_py)
 
     print(f"Using device: {device}")
 
-    env = gym.make("ALE/Pong-v5", render_mode="human", obs_type="grayscale")
+    render_mode = "human" if render else None
+    print("Render mode:", render_mode)
+    env = gym.make("ALE/Pong-v5", render_mode=render_mode, obs_type="grayscale")
     n_actions = env.action_space.n  # type: ignore
 
     agent = Agent(n_actions)
