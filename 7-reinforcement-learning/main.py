@@ -284,10 +284,9 @@ def main() -> None:
             if verbose:
                 print(
                     f"[{episode + 1:>3}] "
-                    f"total_steps={total_steps} "
                     f"agent_steps={agent.steps} "
                     f"episode_steps={episode_steps} "
-                    f"reward={episode_reward} "
+                    f"reward={episode_reward:.0f} "
                     f"epsilon={agent.epsilon:.3f}"
                 )
 
@@ -296,11 +295,11 @@ def main() -> None:
 
         print(
             f"Episode {episode + 1}/{starting_episode + EPISODES} | "
-            f"Score: {episode_reward:.1f} | "
+            f"Score: {episode_reward:.0f} | "
             f"Epsilon: {agent.epsilon:.3f} | "
             f"Memory: {len(agent.memory)} | "
-            f"Episode steps: {episode_steps} | "
-            f"Total steps: {total_steps}"
+            f"Agent steps: {agent.steps} | "
+            f"Episode steps: {episode_steps}"
         )
 
         if save_checkpoints and total_steps >= WARMUP_STEPS:
