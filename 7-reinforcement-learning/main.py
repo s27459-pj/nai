@@ -210,12 +210,15 @@ class Agent:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--save-checkpoints", action="store_true", default=False)
+    parser.add_argument("--save-checkpoints-every", type=int, default=10)
     parser.add_argument("--checkpoint-dir", type=pathlib.Path)
     parser.add_argument("--load-checkpoint", type=pathlib.Path)
     parser.add_argument("--render", action="store_true", default=False)
     parser.add_argument("--verbose", action="store_true", default=False)
     args = parser.parse_args()
+
     save_checkpoints: bool = args.save_checkpoints
+    save_checkpoints_every: int = args.save_checkpoints_every
     checkpoint_dir: pathlib.Path = args.checkpoint_dir or pathlib.Path("checkpoints")
     load_checkpoint: pathlib.Path | None = args.load_checkpoint
     render: bool = args.render
@@ -302,7 +305,15 @@ def main() -> None:
             f"Episode steps: {episode_steps}"
         )
 
-        if save_checkpoints and total_steps >= WARMUP_STEPS:
+        if (
+            save_checkpoints
+            and total_steps >= WARMUP_STEPS
+            and (
+                episode % save_checkpoints_every == 0
+                # Always save a checkpoint at the end of training
+                or episode == starting_episode + EPISODES - 1
+            )
+        ):
             checkpoint_path = checkpoint_dir / f"episode_{episode + 1}.pt"
             agent.save_checkpoint(checkpoint_path, episode + 1)
             print(f"Saved checkpoint {checkpoint_path}")
