@@ -22,6 +22,10 @@ from torch.types import FileLike
 EPISODES = 500
 # How many frames to stack before saving to memory
 FRAME_STACK_SIZE = 4
+# How many frames to collect before starting training
+WARMUP_STEPS = 10_000
+# Train every N frames
+TRAIN_FREQUENCY = 4
 
 device = torch.device(
     "cuda"
@@ -115,7 +119,7 @@ class Agent:
         self.target_net.eval()
 
         self.optimizer = optim.Adam(self.policy_net.parameters(), lr=0.00025)
-        self.memory = ReplayBuffer(10000)
+        self.memory = ReplayBuffer(100_000)
 
         # Hyperparameters
         self.epsilon = 1.0
@@ -124,6 +128,7 @@ class Agent:
         self.gamma = 0.99
         self.batch_size = 32
         self.target_update_freq = 1000
+        # How much training steps the agent has taken
         self.steps = 0
 
     def select_action(self, state: np.ndarray) -> int:
@@ -204,9 +209,13 @@ class Agent:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
+    parser.add_argument("--save-checkpoints", action="store_true", default=False)
+    parser.add_argument("--checkpoint-dir", type=pathlib.Path)
     parser.add_argument("--load-checkpoint", type=pathlib.Path)
     parser.add_argument("--verbose", action="store_true", default=False)
     args = parser.parse_args()
+    save_checkpoints: bool = args.save_checkpoints
+    checkpoint_dir: pathlib.Path = args.checkpoint_dir or pathlib.Path("checkpoints")
     load_checkpoint: pathlib.Path | None = args.load_checkpoint
     verbose: bool = args.verbose
 
@@ -229,9 +238,11 @@ def main() -> None:
             f"Epsilon: {agent.epsilon}"
         )
 
+    total_steps = 0
+
     # Run n + EPISODES times (depends if we loaded a checkpoint)
     for episode in range(starting_episode, starting_episode + EPISODES):
-        observation, _ = env.reset(seed=42)
+        observation, _ = env.reset()
         observation = preprocess_frame(observation)
 
         # Initialize frame stack with first frame repeated
@@ -257,16 +268,23 @@ def main() -> None:
             transition = Transition(state, action, float(reward), next_state, done)
             agent.memory.push(transition)
 
-            # Train agent on the current
-            agent.train_step()
+            # Only train after warm-up period and every TRAIN_FREQUENCY frames
+            if total_steps >= WARMUP_STEPS and total_steps % TRAIN_FREQUENCY == 0:
+                agent.train_step()
 
             state = next_state
             episode_reward += float(reward)
             episode_steps += 1
+            total_steps += 1
 
             if verbose:
                 print(
-                    f"[{episode + 1:>3}] steps={episode_steps} reward={episode_reward}"
+                    f"[{episode + 1:>3}] "
+                    f"total_steps={total_steps} "
+                    f"agent_steps={agent.steps} "
+                    f"episode_steps={episode_steps} "
+                    f"reward={episode_reward} "
+                    f"epsilon={agent.epsilon:.3f}"
                 )
 
             if done:
@@ -275,14 +293,16 @@ def main() -> None:
         print(
             f"Episode {episode + 1}/{starting_episode + EPISODES} | "
             f"Score: {episode_reward:.1f} | "
-            f"Steps: {episode_steps} | "
             f"Epsilon: {agent.epsilon:.3f} | "
-            f"Memory: {len(agent.memory)}"
+            f"Memory: {len(agent.memory)} | "
+            f"Episode steps: {episode_steps} | "
+            f"Total steps: {total_steps}"
         )
 
-        checkpoint_path = f"checkpoints/episode_{episode + 1}.pt"
-        agent.save_checkpoint(checkpoint_path, episode + 1)
-        print(f"Saved checkpoint {checkpoint_path}")
+        if save_checkpoints and total_steps >= WARMUP_STEPS:
+            checkpoint_path = checkpoint_dir / f"episode_{episode + 1}.pt"
+            agent.save_checkpoint(checkpoint_path, episode + 1)
+            print(f"Saved checkpoint {checkpoint_path}")
 
     env.close()
     print("Training complete!")
