@@ -19,4 +19,7 @@ When inside the `7-reinforcement-learning` directory:
 
 ## Example Usage
 
+[example.mp4](https://github.com/user-attachments/assets/123ba33f-7149-4496-b311-9571177453ec)
+
+Logs from a training session:
 ![Output of the agent training](./assets/training.png)
